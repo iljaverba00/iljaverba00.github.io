@@ -1,34 +1,31 @@
 <template>
-
-  <tab-view
-      v-model:active-index="tabIndex"
-  >
-    <tab-panel
-        header="Checking AR"
-        :disabled="false"
-    >
-      <CheckSupport/>
-    </tab-panel>
-    <tab-panel
-        header="Example AR - 1"
-    >
-
-    </tab-panel>
-  </tab-view>
+<!--  <AugmentedReality />-->
+    <Card style="width: 300px">
+      <template #header>
+<!--        <img alt="user header"  />-->
+      </template>
+      <template #title> AR </template>
+      <template #subtitle> none </template>
+      <template #content>
+        <p class="m-0">
+          Augmented reality engine
+        </p>
+      </template>
+      <template #footer>
+        <div class="flex gap-3 mt-1">
+<!--          <Button label="Cancel" severity="secondary" outlined class="w-full" />-->
+          <Button label="Go to" class="w-full" @click="toRoute('/ar')" />
+        </div>
+      </template>
+    </Card>
 </template>
-
 <script setup>
-import {ref} from "vue";
-import CheckSupport from "@/components/tabs/CheckSupport.vue";
+// import AugmentedReality from "@/components/ar/AugmentedReality.vue";
 
-const tabIndex = ref(0);
+import {useRouter} from "vue-router";
 
+const router = useRouter();
+const toRoute = (route) =>{
+  router.push(route)
+}
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-
-/*.p-tabview-nav-container {
-  display: inline-flex;
-}*/
-</style>
