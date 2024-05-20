@@ -1,4 +1,4 @@
-import { createMemoryHistory, createRouter } from 'vue-router'
+import {createRouter, createWebHistory} from 'vue-router'
 
 import Main from '../components/Main.vue'
 import AR from '../components/projects/ar/AugmentedReality.vue'
@@ -9,6 +9,6 @@ const routes = [
 ]
 
 export default createRouter({
-  history: createMemoryHistory(),
+  history: createWebHistory(),
   routes,
 })
