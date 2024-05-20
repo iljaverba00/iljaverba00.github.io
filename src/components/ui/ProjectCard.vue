@@ -1,5 +1,5 @@
 <template>
-  <v-card class="mx-auto" max-width="300" min-width="300">
+  <v-card class="mx-auto bg-white" max-width="300" min-width="300">
     <v-img
       color="surface-variant"
       height="150"
@@ -11,7 +11,7 @@
     </v-card-title>
 
     <v-card-text>
-      <div class="text-medium-emphasis">
+      <div class="">
         {{ subtitle }}
       </div>
     </v-card-text>
@@ -34,7 +34,6 @@
     <v-expand-transition>
       <div v-show="show">
         <v-divider></v-divider>
-
         <v-card-text>
           {{ desc }}
         </v-card-text>
@@ -54,7 +53,6 @@ const router = useRouter();
 const show = ref(false);
 
 const toLayout = (name: string) => {
-  console.log(name)
   router.push(name)
 }
 </script>

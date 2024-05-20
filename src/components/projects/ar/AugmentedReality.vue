@@ -1,33 +1,43 @@
 <template>
-  <v-tabs
-    bg-color="indigo-darken-2"
-    fixed-tabs
-    align-tabs="center"
-    v-model="currentTab"
+
+  <v-app-bar
+      color="primary"
+      density="compact"
   >
-    <v-tab value="check" text="Checking AR">
-
-    </v-tab>
-
-    <v-tab value="ar1" text="Example AR - 1"></v-tab>
-  </v-tabs>
-
-
-  <v-tabs-window v-model="currentTab" >
-    <v-tabs-window-item
-      value="check"
-      style="justify-content: center"
+    <v-tabs
+        bg-color="primary"
+        fixed-tabs
+        align-tabs="center"
+        v-model="currentTab"
     >
-        <table style="display: inline">
-          <tbody>
-          <tr
+      <v-tab value="check" text="Checking AR">
+
+      </v-tab>
+
+      <v-tab value="ar1" text="Example AR - 1"></v-tab>
+    </v-tabs>
+    <v-spacer></v-spacer>
+    <v-btn icon="mdi-home" color="white" @click="toMain"/>
+
+  </v-app-bar>
+
+
+  <v-tabs-window v-model="currentTab">
+    <v-tabs-window-item
+        value="check"
+    >
+      <table style="display: flex; justify-content: center">
+        <tbody>
+        <tr
             v-for="module of modules"
             :key="module.name">
-            <td style="text-align: left"><a :href="module.url">{{module.name}}</a></td>
-            <td :style="module.supported?'background:#10b981':'background:var(--red-400)'"><span>{{module.supported}}</span> <!----></td>
-          </tr>
-          </tbody>
-        </table>
+          <td style="text-align: left"><a :href="module.url">{{ module.name }}</a></td>
+          <td :style="`background:${module.supported?'#10b981':'#EF5350'}`">
+            <span>{{ module.supported }}</span>
+          </td>
+        </tr>
+        </tbody>
+      </table>
 
     </v-tabs-window-item>
   </v-tabs-window>
@@ -37,8 +47,15 @@
 <script setup>
 
 import {ref} from "vue";
+import {useRouter} from "vue-router";
+
+const router = useRouter();
 
 const currentTab = ref('check');
+
+const toMain = () => {
+  router.push('/');
+}
 
 const modules = [
   {

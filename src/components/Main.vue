@@ -28,7 +28,7 @@
     <!--      <v-app-bar-nav-icon></v-app-bar-nav-icon>-->
     <!--    </template>-->
 
-    <v-app-bar-title>Projects:IVerba</v-app-bar-title>
+    <v-app-bar-title>Projects|IV</v-app-bar-title>
 
     <!--    <template v-slot:append>-->
     <!--      <v-btn icon="mdi-dots-vertical"></v-btn>-->
@@ -66,11 +66,14 @@
 
 <script setup lang="ts">
 
+import { routes } from '../router/routes.js'
+
 const projects = [{
   title: "Augmented reality",
   subtitle: "Augmented reality project, based of WebXR",
   image: "eidosmedia-ar.png",
-  desc: "Here should be description"
+  desc: "Here should be description",
+  path: routes[1].path
 }]
 
 </script>
