@@ -8,9 +8,12 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AugmentedReality: typeof import('./src/components/projects/ar/AugmentedReality.vue')['default']
+    CheckTab: typeof import('./src/components/projects/ar/webxr/CheckTab.vue')['default']
     Main: typeof import('./src/components/Main.vue')['default']
     ProjectCard: typeof import('./src/components/ui/ProjectCard.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    ThreeJsAr: typeof import('./src/components/projects/ar/threear/ThreeJsAr.vue')['default']
+    WebXrTab: typeof import('./src/components/projects/ar/webxr/WebXrTab.vue')['default']
   }
 }

@@ -20,7 +20,7 @@
       <v-btn
         color="orange-lighten-2"
         text="Start"
-        @click="toLayout('/ar')"
+        @click="toLayout"
       ></v-btn>
 
       <v-spacer></v-spacer>
@@ -46,14 +46,14 @@
 import {ref} from "vue";
 import {useRouter} from "vue-router";
 
-defineProps(['title', 'subtitle', 'image', 'desc']);
+const props = defineProps(['title', 'subtitle', 'image', 'desc', 'route']);
 
 const router = useRouter();
 
 const show = ref(false);
 
-const toLayout = (name: string) => {
-  router.push(name)
+const toLayout = () => {
+  router.push(props.route)
 }
 </script>
 

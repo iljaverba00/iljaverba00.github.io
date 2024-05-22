@@ -47,6 +47,7 @@
               :subtitle="project.subtitle"
               :desc="project.desc"
               :image="project.image"
+              :route = "project.route"
             />
             <!--            <v-sheet-->
             <!--              color="surface-variant-alt"-->
@@ -73,7 +74,7 @@ const projects = [{
   subtitle: "Augmented reality project, based of WebXR",
   image: "eidosmedia-ar.png",
   desc: "Here should be description",
-  path: routes[1].path
+  route: routes[1].path
 }]
 
 </script>
