@@ -97,13 +97,9 @@ class ARBtn {
             button.onclick = function () {
                 console.log('333')
                 if ( currentSession === null ) {
-
                     navigator.xr.requestSession( 'immersive-ar', sessionInit ).then( onSessionStarted );
-
                 } else {
-
                     currentSession.end();
-
                     if ( navigator.xr.offerSession !== undefined ) {
 
                         navigator.xr.offerSession( 'immersive-ar', sessionInit )

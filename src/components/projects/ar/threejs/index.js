@@ -32,7 +32,7 @@ function init() {
     container.appendChild(renderer.domElement);
 
     // todo
-    // document.body.appendChild(ARBtn.createButton(renderer, {requiredFeatures: ['hit-test']}));
+    document.body.appendChild(ARBtn.createButton(renderer, {requiredFeatures: ['hit-test']}));
 
     const geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.2, 32).translate(0, 0.1, 0);
 
@@ -144,7 +144,7 @@ function render(timestamp, frame) {
 
 export default function () {
     init();
-    sessionSwitcher();
+    //sessionSwitcher();
     animate();
     console.log('13')
 }
