@@ -25,9 +25,8 @@
 
 import {ref} from "vue";
 import {useRouter} from "vue-router";
-import CheckTab from "./webxr/CheckTab.vue";
-import WebXrTab from "./webxr/WebXrTab.vue";
-import ThreeJsAr from "./threear/ThreeJsAr.vue";
+import CheckTab from "./CheckTab.vue";
+import ThreeJsAr from "./threejs/ThreeAR.vue";
 
 const router = useRouter();
 
@@ -38,9 +37,8 @@ const toMain = () => {
 }
 
 const tabs = [
-  {id: 'check', name: 'Check engine', component: CheckTab},
-  {id: 'web-xr', name: 'WebXr', component: WebXrTab},
-  {id: 'three-ar', name: 'ThreeAr', component: ThreeJsAr}
+  {id: 'three-js-ar', name: 'Example 1', component: ThreeJsAr},
+  {id: 'check', name: 'Checking WebXr available', component: CheckTab},
 ]
 
 </script>
