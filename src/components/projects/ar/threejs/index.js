@@ -32,7 +32,7 @@ function init() {
     container.appendChild(renderer.domElement);
 
     // todo
-    document.body.appendChild(ARBtn.createButton(renderer, {requiredFeatures: ['hit-test']}));
+    // document.body.appendChild(ARBtn.createButton(renderer, {requiredFeatures: ['hit-test']}));
 
     const geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.2, 32).translate(0, 0.1, 0);
 
@@ -143,12 +143,23 @@ function render(timestamp, frame) {
 
 
 export default function () {
-    init();
-    //sessionSwitcher();
-    animate();
-    console.log('13')
+    isARSupported(() => {
+            init();
+            sessionSwitcher();
+            animate();
+            console.log('Start AR')
+        },
+        () => {
+            alert("AR not supported")
+        }
+    )
 }
 
+const isARSupported = (resolve, reject) => {
+    navigator.xr.isSessionSupported('immersive-ar').then(function (supported) {
+        supported ? resolve() : reject();
+    }).catch(reject);
+}
 
 export const sessionSwitcher = () => {
     const sessionInit = {
@@ -166,6 +177,7 @@ export const sessionSwitcher = () => {
         currentSession.removeEventListener('end', sessionEnding);
         currentSession = null;
     }
+
 
     if (currentSession === null) {
         navigator.xr.requestSession('immersive-ar', sessionInit).then(sessionStarted);
