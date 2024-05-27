@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import {ARBtn} from "./ARBtn";
 
 let container;
 let camera, scene, renderer;
@@ -12,13 +11,14 @@ let hitTestSourceRequested = false;
 
 let currentSession = null;
 
+let sessionInit = {
+    requiredFeatures: ['hit-test'],
+    optionalFeatures: ['dom-overlay']
+};
 
 function init() {
-
     container = document.getElementById('three-js-ar');
-
     scene = new THREE.Scene();
-
     camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 20);
 
     const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 3);
@@ -32,20 +32,16 @@ function init() {
     container.appendChild(renderer.domElement);
 
     // todo
-    // document.body.appendChild(ARBtn.createButton(renderer, {requiredFeatures: ['hit-test']}));
-
     const geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.2, 32).translate(0, 0.1, 0);
 
     function onSelect() {
 
         if (reticle.visible) {
-
             const material = new THREE.MeshPhongMaterial({color: 0xffffff * Math.random()});
             const mesh = new THREE.Mesh(geometry, material);
             reticle.matrix.decompose(mesh.position, mesh.quaternion, mesh.scale);
             mesh.scale.y = Math.random() * 2 + 1;
             scene.add(mesh);
-
         }
 
     }
@@ -54,62 +50,43 @@ function init() {
     controller.addEventListener('select', onSelect);
     scene.add(controller);
 
-    reticle = new THREE.Mesh(
-        new THREE.RingGeometry(0.15, 0.2, 32)
-            .rotateX(-Math.PI / 2),
-        new THREE.MeshBasicMaterial()
-    );
+    reticle = new THREE.Mesh(new THREE.RingGeometry(0.15, 0.2, 32)
+        .rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial());
     reticle.matrixAutoUpdate = false;
     reticle.visible = false;
     scene.add(reticle);
 
-    //
-
     window.addEventListener('resize', onWindowResize);
-
 }
 
 function onWindowResize() {
-
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
-
     renderer.setSize(window.innerWidth, window.innerHeight);
-
 }
 
 //
 
 function animate() {
-
     renderer.setAnimationLoop(render);
-
 }
 
 function render(timestamp, frame) {
 
     if (frame) {
-
         const referenceSpace = renderer.xr.getReferenceSpace();
         const session = renderer.xr.getSession();
 
         if (hitTestSourceRequested === false) {
-
             session.requestReferenceSpace('viewer').then(function (referenceSpace) {
-
                 session.requestHitTestSource({space: referenceSpace}).then(function (source) {
-
                     hitTestSource = source;
-
                 });
-
             });
 
             session.addEventListener('end', function () {
-
                 hitTestSourceRequested = false;
                 hitTestSource = null;
-
             });
 
             hitTestSourceRequested = true;
@@ -117,42 +94,29 @@ function render(timestamp, frame) {
         }
 
         if (hitTestSource) {
-
             const hitTestResults = frame.getHitTestResults(hitTestSource);
 
             if (hitTestResults.length) {
-
                 const hit = hitTestResults[0];
-
                 reticle.visible = true;
                 reticle.matrix.fromArray(hit.getPose(referenceSpace).transform.matrix);
-
             } else {
-
                 reticle.visible = false;
-
             }
-
         }
-
     }
-
     renderer.render(scene, camera);
-
 }
 
 
 export default function () {
-    isARSupported(() => {
-            init();
-            sessionSwitcher();
-            animate();
-            console.log('Start AR')
-        },
-        () => {
-            alert("AR not supported")
-        }
-    )
+    isARSupported(()=>{
+        init();
+        animate();
+        sessionSwitcher();
+    },()=>{
+        alert("AR not supported");
+    })
 }
 
 const isARSupported = (resolve, reject) => {
@@ -162,33 +126,29 @@ const isARSupported = (resolve, reject) => {
 }
 
 export const sessionSwitcher = () => {
-    const sessionInit = {
-        requiredFeatures: ['hit-test'],
-        optionalFeatures: ['dom-overlay']
-    };
+    sessionInit.domOverlay = {root: container};
 
-    const sessionStarted = async (session) => {
-        currentSession.addEventListener('end', sessionEnding);
+
+    async function onSessionStarted(session) {
+        session.addEventListener('end', onSessionEnded);
         renderer.xr.setReferenceSpaceType('local');
         await renderer.xr.setSession(session);
         currentSession = session;
     }
-    const sessionEnding = () => {
-        currentSession.removeEventListener('end', sessionEnding);
+
+    function onSessionEnded( /*event*/) {
+        currentSession.removeEventListener('end', onSessionEnded);
+        sessionInit.domOverlay.root.style.display = 'none';
         currentSession = null;
     }
 
-
     if (currentSession === null) {
-        navigator.xr.requestSession('immersive-ar', sessionInit).then(sessionStarted);
+        navigator.xr.requestSession('immersive-ar', sessionInit).then(onSessionStarted);
     } else {
         currentSession.end();
         if (navigator.xr.offerSession !== undefined) {
             navigator.xr.offerSession('immersive-ar', sessionInit)
-                .then(sessionStarted)
-                .catch((err) => {
-                    console.warn(err);
-                });
+                .then(onSessionStarted).catch((err) => {console.warn(err)});
         }
     }
 }
