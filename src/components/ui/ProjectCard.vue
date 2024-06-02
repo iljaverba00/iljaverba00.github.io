@@ -11,7 +11,7 @@
     </v-card-title>
 
     <v-card-text>
-      <div class="">
+      <div>
         {{ subtitle }}
       </div>
     </v-card-text>
@@ -42,7 +42,7 @@
   </v-card>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import {ref} from "vue";
 import {useRouter} from "vue-router";
 

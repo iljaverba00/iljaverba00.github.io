@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { ref } from "vue";
+import {ref} from "vue";
 
 let container;
 let camera, scene, renderer;
@@ -23,28 +23,31 @@ export default function () {
     })
     return {
         resetArSession,
-        addCylinder
+        addCylinder,
+        currentSession
     }
 }
 
-let sessionInit = {
-    requiredFeatures: ['hit-test'], optionalFeatures: ['dom-overlay']
-};
-
 const resetArSession = () => {
     currentSession?.value?.end?.();
-    renderer.setAnimationLoop(null);
-    renderer.dispose();
-    scene = camera = renderer = null;
+    renderer?.setAnimationLoop?.(null);
+    renderer?.dispose?.();
+    scene = camera = renderer = controller = reticle = undefined;
 
-    //const container = document.getElementById('three-js-ar');
-   //container.style.display = 'none';
-    //container.removeChild(container.lastChild);
+    if (container) {
+        container.style.display = 'none';
+        container.removeChild(container.lastChild);
+    }
 }
 
 function init() {
     container = document.getElementById('three-js-ar');
     document.body.appendChild(container);
+
+    // const button = document.createElement('button');
+    // button.style.color = 'blue';
+    // button.innerHTML = 'TEST';
+    // container.appendChild(button);
 
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 20);
@@ -60,8 +63,6 @@ function init() {
     container.appendChild(renderer.domElement);
 
     // todo
-
-
 
     controller = renderer.xr.getController(0);
     //controller.addEventListener('select', onSelect);
@@ -95,7 +96,6 @@ function onWindowResize() {
 
 function animate() {
     renderer.setAnimationLoop(render);
-    //container.style.display = 'none';
 }
 
 function render(timestamp, frame) {
@@ -141,21 +141,13 @@ function render(timestamp, frame) {
 const isARSupported = (resolve, reject) => {
     navigator.xr.isSessionSupported('immersive-ar').then((supported) => {
         supported ? resolve() : reject(supported);
-    }).catch((e)=>{
+    }).catch((e) => {
         console.warn(e)
         reject?.(e)
     });
 }
 
 export const sessionSwitcher = () => {
-    sessionInit.domOverlay = {root: container};
-
-    async function onSessionStarted(session) {
-        session.addEventListener('end', onSessionEnded);
-        renderer.xr.setReferenceSpaceType('local');
-        await renderer.xr.setSession(session);
-        currentSession.value = session;
-    }
 
     function onSessionEnded( /*event*/) {
         currentSession.value.removeEventListener('end', onSessionEnded);
@@ -163,17 +155,18 @@ export const sessionSwitcher = () => {
         currentSession.value = null;
     }
 
-    if (currentSession.value === null) {
-        navigator.xr.requestSession('immersive-ar', sessionInit).then(onSessionStarted);
-    } else {
-        currentSession.value.end();
-        if (navigator.xr.offerSession !== undefined) {
-            navigator.xr.offerSession('immersive-ar', sessionInit)
-                .then(onSessionStarted).catch((err) => {
-                console.warn(err)
-            });
-        }
-    }
+    let sessionInit = {
+        requiredFeatures: ['hit-test'],
+        optionalFeatures: ['dom-overlay'],
+        domOverlay: {root: container}
+    };
+
+    navigator.xr.requestSession('immersive-ar', sessionInit).then(async (session) => {
+        session.addEventListener('end', onSessionEnded);
+        renderer.xr.setReferenceSpaceType('local');
+        await renderer.xr.setSession(session);
+        currentSession.value = session;
+    });
 }
 
 

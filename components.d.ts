@@ -7,8 +7,6 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
-    AugmentedReality: typeof import('./src/components/projects/ar/AugmentedReality.vue')['default']
-    CheckTab: typeof import('./src/components/projects/ar/CheckTab.vue')['default']
     Main: typeof import('./src/components/Main.vue')['default']
     ProjectCard: typeof import('./src/components/ui/ProjectCard.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']

@@ -33,7 +33,7 @@ onMounted(() => {
 })
 
 const close = (event: Event) => {
-  //ar.resetArSession();
+  ar.resetArSession();
   router.push('/');
 }
 const addCylinder = ()=> {
