@@ -11,6 +11,8 @@ let hitTestSource = null;
 let hitTestSourceRequested = false;
 let currentSession = ref(null);
 
+const SESSION_NAME = 'immersive-ar';
+
 //let statusAr = ref(); // undefined | null - didn't checked, false - not supported, true - supported
 
 const geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.2, 32).translate(0, 0.1, 0);
@@ -24,6 +26,7 @@ export default function () {
     return {
         resetArSession,
         addCylinder,
+        clearCylinders,
         currentSession
     }
 }
@@ -62,8 +65,6 @@ function init() {
     renderer.xr.enabled = true;
     container.appendChild(renderer.domElement);
 
-    // todo
-
     controller = renderer.xr.getController(0);
     //controller.addEventListener('select', onSelect);
     scene.add(controller);
@@ -78,11 +79,20 @@ function init() {
     window.addEventListener('resize', onWindowResize);
 }
 
+const clearCylinders = () => {
+    const obj = scene.getObjectsByProperty('test',null,[]);
+    //alert(obj.length)
+    for (const o of obj) {
+        scene.remove(o);
+    }
+}
+
 const addCylinder = () => {
     if (reticle.visible) {
         const material = new THREE.MeshPhongMaterial({color: 0xffffff * Math.random()});
         const mesh = new THREE.Mesh(geometry, material);
         reticle.matrix.decompose(mesh.position, mesh.quaternion, mesh.scale);
+        mesh.test = null;
         mesh.scale.y = Math.random() * 2 + 1;
         scene.add(mesh);
     }
@@ -139,7 +149,7 @@ function render(timestamp, frame) {
 }
 
 const isARSupported = (resolve, reject) => {
-    navigator.xr.isSessionSupported('immersive-ar').then((supported) => {
+    navigator.xr.isSessionSupported(SESSION_NAME).then((supported) => {
         supported ? resolve() : reject(supported);
     }).catch((e) => {
         console.warn(e)
@@ -161,12 +171,13 @@ export const sessionSwitcher = () => {
         domOverlay: {root: container}
     };
 
-    navigator.xr.requestSession('immersive-ar', sessionInit).then(async (session) => {
-        session.addEventListener('end', onSessionEnded);
-        renderer.xr.setReferenceSpaceType('local');
-        await renderer.xr.setSession(session);
-        currentSession.value = session;
-    });
+    navigator.xr.requestSession(SESSION_NAME, sessionInit)
+        .then(async (session) => {
+            session.addEventListener('end', onSessionEnded);
+            renderer.xr.setReferenceSpaceType('local');
+            await renderer.xr.setSession(session);
+            currentSession.value = session;
+        });
 }
 
 

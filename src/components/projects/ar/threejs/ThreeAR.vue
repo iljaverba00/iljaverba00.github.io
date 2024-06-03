@@ -1,13 +1,18 @@
 <template>
-  <div
-      id="three-js-ar"
-  >
+  <div id="three-js-ar">
     <v-btn
         style="margin: 5px"
         variant="text"
         density="comfortable"
         icon="mdi-circle"
         @click="addCylinder"
+    />
+    <v-btn
+        style="margin: 5px 5px 5px 10px"
+        variant="text"
+        density="comfortable"
+        icon="mdi-delete"
+        @dblclick="clearCylinders"
     />
     <v-btn
         style="margin: 5px; float: right"
@@ -38,6 +43,9 @@ const close = (event: Event) => {
 }
 const addCylinder = ()=> {
   ar.addCylinder?.();
+}
+const clearCylinders = () => {
+  ar?.clearCylinders?.();
 }
 
 // const leftDriver = ref(true);
