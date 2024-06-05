@@ -1,6 +1,5 @@
 import * as THREE from 'three';
 import {ref} from "vue";
-import {debugDiv} from "./debug";
 
 let container;
 let camera, scene, renderer;
@@ -12,18 +11,16 @@ let hitTestSource = null;
 let hitTestSourceRequested = false;
 let currentSession = ref(null);
 
-const SESSION_NAME = 'immersive-ar';
 
 //let statusAr = ref(); // undefined | null - didn't checked, false - not supported, true - supported
 
 const geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.2, 32).translate(0, 0.1, 0);
 
 export default function () {
-    isARSupported(() => {
-        init();
-        animate();
-        sessionSwitcher();
-    })
+    init();
+    animate();
+    sessionSwitcher();
+
     return {
         resetArSession,
         addCylinder,
@@ -81,7 +78,7 @@ function init() {
 }
 
 const clearCylinders = () => {
-    const obj = scene.getObjectsByProperty('test',null,[]);
+    const obj = scene.getObjectsByProperty('test', null, []);
     //alert(obj.length)
     for (const o of obj) {
         scene.remove(o);
@@ -95,6 +92,7 @@ const addCylinder = () => {
         reticle.matrix.decompose(mesh.position, mesh.quaternion, mesh.scale);
         mesh.test = null;
         mesh.scale.y = Math.random() * 2 + 1;
+        console.log(reticle.visible)
         scene.add(mesh);
     }
 }
@@ -149,14 +147,6 @@ function render(timestamp, frame) {
     }
 }
 
-const isARSupported = (resolve, reject) => {
-    navigator.xr.isSessionSupported(SESSION_NAME).then((supported) => {
-        supported ? resolve() : reject?.(supported);
-    }).catch((e) => {
-        console.warn(e)
-        reject?.(e)
-    });
-}
 
 export const sessionSwitcher = () => {
 
@@ -172,7 +162,7 @@ export const sessionSwitcher = () => {
         domOverlay: {root: container}
     };
 
-    navigator.xr.requestSession(SESSION_NAME, sessionInit)
+    navigator.xr.requestSession('immersive-ar', sessionInit)
         .then(async (session) => {
             session.addEventListener('end', onSessionEnded);
             renderer.xr.setReferenceSpaceType('local');

@@ -7,6 +7,7 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    DownloadXRViewerLayout: typeof import('./src/components/projects/ar/pages/DownloadXRViewerLayout.vue')['default']
     Main: typeof import('./src/components/Main.vue')['default']
     ProjectCard: typeof import('./src/components/ui/ProjectCard.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']

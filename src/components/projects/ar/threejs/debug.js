@@ -2,7 +2,7 @@ export const debugDiv = () => {
 
     const debugDiv = document.createElement('div');
     debugDiv.id = 'debug';
-    debugDiv.style = 'z-index:100000;font-size:10px;color:grey;width:100vw;height:50vh;top:50vh;display:none;position:absolute;overflow:auto';
+    debugDiv.style = 'font-size:10px;color:grey;width:100vw;height:50vh;top:50vh;display:none;position:absolute;overflow:auto';
     document.body.appendChild(debugDiv);
 
 
