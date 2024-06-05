@@ -32,6 +32,10 @@
         @click="close"
     />
 
+    <div id="screensaver" class="center">
+      Move your device for detect surface
+    </div>
+
   </div>
 
 </template>
@@ -71,5 +75,22 @@ const showConsole = () => {
 </script>
 
 <style scoped>
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
 
+.center {
+  border: 8px solid;
+  border-radius: 30px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: white;
+  font-size: 16px;
+  animation: blink 2s linear infinite;
+}
 </style>

@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 import {ref} from "vue";
 
-let container;
+let container, screensaver;
+
 let camera, scene, renderer;
 let controller;
 
@@ -45,10 +46,14 @@ function init() {
     container = document.getElementById('three-js-ar');
     document.body.appendChild(container);
 
+    screensaver = document.getElementById('screensaver');
+
     // const button = document.createElement('button');
     // button.style.color = 'blue';
     // button.innerHTML = 'TEST';
     // container.appendChild(button);
+
+
 
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 20);
@@ -79,7 +84,7 @@ function init() {
 
 const clearCylinders = () => {
     const obj = scene.getObjectsByProperty('test', null, []);
-    //alert(obj.length)
+    console.log("clear cylinders array");
     for (const o of obj) {
         scene.remove(o);
     }
@@ -92,7 +97,6 @@ const addCylinder = () => {
         reticle.matrix.decompose(mesh.position, mesh.quaternion, mesh.scale);
         mesh.test = null;
         mesh.scale.y = Math.random() * 2 + 1;
-        console.log(reticle.visible)
         scene.add(mesh);
     }
 }
@@ -136,6 +140,7 @@ function render(timestamp, frame) {
             if (hitTestResults.length) {
                 const hit = hitTestResults[0];
                 reticle.visible = true;
+                screensaver.style.display = 'none';
                 reticle.matrix.fromArray(hit.getPose(referenceSpace).transform.matrix);
             } else {
                 reticle.visible = false;

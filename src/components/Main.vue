@@ -21,8 +21,8 @@
   <!--  </v-container>-->
 
   <v-app-bar
-    color="primary"
-    density="compact"
+      color="primary"
+      density="compact"
   >
     <!--    <template v-slot:prepend>-->
     <!--      <v-app-bar-nav-icon></v-app-bar-nav-icon>-->
@@ -39,15 +39,15 @@
       <v-container fluid>
         <v-row justify="center">
           <v-col
-            v-for="project of projects"
-            :key="project.title"
-            cols="auto">
+              v-for="project of projects"
+              :key="project.title"
+              cols="auto">
             <project-card
-              :title="project.title"
-              :subtitle="project.subtitle"
-              :desc="project.desc"
-              :image="project.image"
-              :route = "project.route"
+                :title="project.title"
+                :subtitle="project.subtitle"
+                :desc="project.desc"
+                :image="project.image"
+                :route="project.route"
             />
             <!--            <v-sheet-->
             <!--              color="surface-variant-alt"-->
@@ -67,7 +67,7 @@
 
 <script setup lang="ts">
 
-import { routes } from '../router/routes.js'
+import {routes} from '../router/routes.js'
 
 const projects = [{
   title: "Augmented reality",

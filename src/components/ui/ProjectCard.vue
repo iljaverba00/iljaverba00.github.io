@@ -41,13 +41,13 @@
     </v-expand-transition>
   </v-card>
 
-  <v-alert
+  <v-snackbar
       v-model="alertModel"
-      density="compact"
-      text="Your browser or device not supported Augmented Reality Engine 'WebXR'"
-      title="Not supported AR"
-      type="warning"
-  ></v-alert>
+      color="yellow"
+      :timeout="10000"
+  >
+    Your browser or device not supported Augmented Reality Engine <b>WebXR</b>
+  </v-snackbar>
 </template>
 
 <script setup>
@@ -73,9 +73,6 @@ const toLayout = () => {
             router.push(routes[2].path)
           } else {
             alertModel.value = true
-            setTimeout(() => {
-              alertModel.value = false
-            }, 10000)
           }
         }
     )
