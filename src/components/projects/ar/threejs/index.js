@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import {ref} from "vue";
+import {debugDiv} from "./debug";
 
 let container;
 let camera, scene, renderer;
@@ -150,7 +151,7 @@ function render(timestamp, frame) {
 
 const isARSupported = (resolve, reject) => {
     navigator.xr.isSessionSupported(SESSION_NAME).then((supported) => {
-        supported ? resolve() : reject(supported);
+        supported ? resolve() : reject?.(supported);
     }).catch((e) => {
         console.warn(e)
         reject?.(e)
