@@ -1,4 +1,5 @@
 import JSZip from "jszip";
+import {th} from "vuetify/locale";
 
 
 export function addCameraStream(element: HTMLVideoElement): Promise<MediaStream> {
@@ -23,45 +24,18 @@ export function addCameraStream(element: HTMLVideoElement): Promise<MediaStream>
 }
 
 
-export function startDownloadFrames(element: HTMLVideoElement, delay: number = 2000) {
-
-    return setTimeout(() => {
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-
-        canvas.width = element.videoWidth
-        canvas.height = element.videoHeight
-
-        ctx.drawImage(element, 0, 0);
-
-        const image = canvas.toDataURL('image/png', 1);
-
-        downloadFile(image);
-    }, delay)
-
-}
-
-
-function downloadFile(image: string) {
-    const downloadElem = document.createElement('a');
-    downloadElem.href = image;
-    downloadElem.download = "pic.png";
-    document.body.appendChild(downloadElem);
-    downloadElem.click();
-    document.body.removeChild(downloadElem);
-    console.log('download')
-}
-
-
 export class GeoRecorder {
     #recorder: MediaRecorder;
+    #videoElement: HTMLVideoElement;
     #recordedChunks = [];
     #geoData = [];
     #geoInterval;
     #startTime;
+    #imageBlobs = [];
 
 
-    constructor(stream: MediaStream) {
+    constructor(videoElement: HTMLVideoElement, stream: MediaStream) {
+        this.#videoElement = videoElement;
         this.#recorder = new MediaRecorder(stream, {mimeType: 'video/webm'});
     }
 
@@ -85,15 +59,34 @@ export class GeoRecorder {
             zip.file(`video_${currTime}.webm`, videoBlob);
             zip.file(`geo_${currTime}.json`, geoJsonBlob);
 
+            const images = zip.folder('images');
+            for (const imageBlob of this.#imageBlobs) {
+                images.file(imageBlob.name, imageBlob.data);
+            }
+
+
             const zipBlob = await zip.generateAsync({type: "blob"});
             this.downloadBlob(zipBlob, `recording.zip`);
+
+
         }
 
         this.#geoInterval = setInterval(() => {
-            navigator.geolocation.getCurrentPosition((position) => {
+            const canvas = document.createElement('canvas') as HTMLCanvasElement;
+            const ctx = canvas.getContext('2d');
+            const timestamp = (Date.now() - this.#startTime) / 1000;
+            if (canvas) {
+                canvas.width = this.#videoElement.videoWidth;
+                canvas.height = this.#videoElement.videoHeight;
+                ctx.drawImage(this.#videoElement, 0, 0);
 
+                canvas.toBlob((data) => {
+                    this.#imageBlobs.push({name: `img_${timestamp}.png`, data});
+                }, 'image/png', 1);
+            }
+
+            navigator.geolocation.getCurrentPosition((position) => {
                 const {latitude, longitude, accuracy} = position.coords;
-                const timestamp = (Date.now() - this.#startTime) / 1000;
 
                 this.#geoData.push({latitude, longitude, accuracy, timestamp});
             })
@@ -105,7 +98,6 @@ export class GeoRecorder {
     stopRecording() {
         this.#recorder.stop();
         clearInterval(this.#geoInterval);
-        this.#recordedChunks = [];
     }
 
     timestamp() {

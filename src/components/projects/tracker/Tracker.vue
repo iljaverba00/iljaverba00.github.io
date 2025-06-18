@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import {onMounted, ref} from "vue";
-import {addCameraStream, GeoRecorder, startDownloadFrames} from "./utils";
+import {addCameraStream, GeoRecorder} from "./utils";
 
 const recording = ref(false);
 let geoRecorder
@@ -10,7 +10,7 @@ let geoRecorder
 onMounted(async () => {
   const videoElement = document.getElementById('camera') as HTMLVideoElement;
   const stream = await addCameraStream(videoElement);
-  geoRecorder = new GeoRecorder(stream)
+  geoRecorder = new GeoRecorder(videoElement, stream)
 });
 
 
