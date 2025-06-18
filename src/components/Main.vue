@@ -69,12 +69,21 @@
 
 import {routes} from '../router/routes.js'
 
-const projects = [{
-  title: "Augmented reality",
-  subtitle: "Augmented reality project, based of WebXR",
-  image: "eidosmedia-ar.png",
-  desc: "Here should be description",
-  route: routes[1].path
-}]
+const projects = [
+  {
+    title: "Augmented reality",
+    subtitle: "Augmented reality project, based of WebXR",
+    image: "eidosmedia-ar.png",
+    desc: "Here should be description",
+    route: routes[1].path
+  },
+  {
+    title: "Tracker AR",
+    subtitle: "video/gps tracker",
+    image: "tesla-detection.jpg",
+    desc: "This demo present tracking your phone position with captured video",
+    route: routes[3].path
+  },
+]
 
 </script>
