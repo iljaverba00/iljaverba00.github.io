@@ -2,18 +2,21 @@ import JSZip from "jszip";
 import {th} from "vuetify/locale";
 
 
-export function addCameraStream(element: HTMLVideoElement): Promise<MediaStream> {
+export function addCameraStream(element: HTMLVideoElement, resolution: 1920): Promise<MediaStream> {
 
     return new Promise((resolve, reject) => {
         navigator.mediaDevices.getUserMedia({
             video: {
                 facingMode: 'environment',
-                width: {ideal: 1920},
-                height: {ideal: 1080}
+                width: {ideal: resolution},
+                height: {ideal: resolution}
             },
             audio: false,
         }).then(stream => {
             element.srcObject = stream;
+            // const track = stream.getVideoTracks()[0];
+            // const capabilities = track.getCapabilities();
+            // console.log(capabilities);
             resolve(stream);
         }).catch(e => {
             console.error('Ошибка доступа к камере:', e);
