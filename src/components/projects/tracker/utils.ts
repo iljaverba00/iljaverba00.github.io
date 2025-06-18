@@ -2,14 +2,14 @@ import JSZip from "jszip";
 import {th} from "vuetify/locale";
 
 
-export function addCameraStream(element: HTMLVideoElement, resolution: 1920): Promise<MediaStream> {
+export function addCameraStream(element: HTMLVideoElement, resolution): Promise<MediaStream> {
 
     return new Promise((resolve, reject) => {
         navigator.mediaDevices.getUserMedia({
             video: {
                 facingMode: 'environment',
-                width: {ideal: resolution},
-                height: {ideal: resolution}
+                width: {ideal: resolution[0]},
+                height: {ideal: resolution[1]}
             },
             audio: false,
         }).then(stream => {
