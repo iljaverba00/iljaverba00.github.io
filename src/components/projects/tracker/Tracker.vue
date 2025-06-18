@@ -1,24 +1,47 @@
 <script setup lang="ts">
 
-import {onMounted} from "vue";
+import {onMounted, ref} from "vue";
+import {addCameraStream, GeoRecorder, startDownloadFrames} from "./utils";
 
-onMounted(()=>{
-  const videoElement = document.getElementById('camera');
+const recording = ref(false);
+let geoRecorder
 
-  navigator.mediaDevices.getUserMedia({
-    video: { facingMode: 'environment' }, // задняя камера
-    audio: false
-  }).then((stream) => {
-    videoElement.srcObject = stream;
-  }).catch((error) => {
-    console.error('Ошибка доступа к камере:', error);
-  });
-})
+
+onMounted(async () => {
+  const videoElement = document.getElementById('camera') as HTMLVideoElement;
+  const stream = await addCameraStream(videoElement);
+  geoRecorder = new GeoRecorder(stream)
+});
+
+
+
+function doRecord() {
+  recording.value = !recording.value;
+  if (recording.value) {
+    geoRecorder.startRecording();
+  }else {
+    geoRecorder.stopRecording();
+  }
+}
+
 </script>
 
 <template>
-  <h3>Tracker</h3>
+  <v-btn
+      style="position: absolute; z-index: 1000; margin: 10px"
+      icon="mdi-record-circle-outline"
+      size="large"
+      :color="recording ? 'red': ''"
+      @click="doRecord"
+  />
   <video id="camera" autoplay playsinline></video>
+
+  <v-snackbar
+      v-model="recording"
+      :timeout="-1"
+  >
+    <div class="text-subtitle-1 pb-2 text-center">Выполняется запись</div>
+  </v-snackbar>
 </template>
 
 <style scoped>
