@@ -16,11 +16,13 @@ const resolutions = {
 };
 
 
-onMounted(async () => {
+async function recreate() {
   const videoElement = document.getElementById('camera') as HTMLVideoElement;
   const stream = await addCameraStream(videoElement, resolutions[resolution.value]);
   geoRecorder = new GeoRecorder(videoElement, stream)
-});
+}
+
+onMounted(recreate);
 
 
 function doRecord() {
@@ -48,6 +50,7 @@ function doRecord() {
       style="position: absolute; z-index: 1000; margin: 10px; right: 0; width: 200px"
       :items="Object.keys(resolutions)"
       label="Разрешение записи"
+      @update:modelValue="recreate"
   />
 
   <video id="camera" autoplay playsinline></video>
