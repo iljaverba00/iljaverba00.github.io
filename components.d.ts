@@ -13,5 +13,6 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     ThreeAR: typeof import('./src/components/projects/ar/threejs/ThreeAR.vue')['default']
+    Tracker: typeof import('./src/components/projects/tracker/Tracker.vue')['default']
   }
 }
