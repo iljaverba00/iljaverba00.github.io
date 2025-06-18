@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@mdi/font": "6.2.95",
+    "jszip": "^3.10.1",
     "roboto-fontface": "*",
     "three": "^0.164.1",
     "vue": "^3.4.21",

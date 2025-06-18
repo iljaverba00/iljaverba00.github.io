@@ -1,4 +1,5 @@
-import {ca, th} from "vuetify/locale";
+import JSZip from "jszip";
+
 
 export function addCameraStream(element: HTMLVideoElement): Promise<MediaStream> {
 
@@ -72,17 +73,20 @@ export class GeoRecorder {
             if (e.data.size) this.#recordedChunks.push(e.data);
         }
 
-        this.#recorder.onstop = () => {
+        this.#recorder.onstop = async () => {
 
             const currTime = this.timestamp();
 
-            const blob = new Blob(this.#recordedChunks, {type: 'video/webm'});
-            this.downloadBlob(blob, `video_${currTime}.webm`);
-
-
+            const videoBlob = new Blob(this.#recordedChunks, {type: 'video/webm'});
             const geoJsonBlob = new Blob([JSON.stringify(this.#geoData, null, 2)], {type: 'application/json'});
-            this.downloadBlob(geoJsonBlob, `geo_${currTime}.json`);
 
+            const zip = new JSZip();
+
+            zip.file(`video_${currTime}.webm`, videoBlob);
+            zip.file(`geo_${currTime}.json`, geoJsonBlob);
+
+            const zipBlob = await zip.generateAsync({type: "blob"});
+            this.downloadBlob(zipBlob, `recording.zip`);
         }
 
         this.#geoInterval = setInterval(() => {
@@ -93,7 +97,7 @@ export class GeoRecorder {
 
                 this.#geoData.push({latitude, longitude, accuracy, timestamp});
             })
-        }, 1000)
+        }, 2000)
 
         this.#recorder.start()
     }
